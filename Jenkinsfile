@@ -26,8 +26,8 @@ pipeline {
   options {
     disableConcurrentBuilds()
     timeout(time: 1, unit: 'HOURS')
-    withAWS(credentials: params.credential, region: params.region)
-    ansiColor('xterm')
+    //withAWS(credentials: params.credential, region: params.region)
+    //ansiColor('xterm')
   }
 
   agent { label 'master' }
@@ -66,7 +66,7 @@ pipeline {
           """
           // This will halt the build if jq not found
           println "Checking jq is installed:"
-          sh "which jq"
+          //sh "which jq"
         }
       }
     }
@@ -76,11 +76,11 @@ pipeline {
         expression { params.action == 'create' }
       }
       steps {
-        script {
-          withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', 
-          credentialsId: params.credential, 
-          accessKeyVariable: 'AWS_ACCESS_KEY_ID',  
-          secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
+//         script {
+//           withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', 
+//           credentialsId: params.credential, 
+//           accessKeyVariable: 'AWS_ACCESS_KEY_ID',  
+//           secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
             sh """
               terraform init
               terraform workspace new ${params.cluster} || true
@@ -100,7 +100,7 @@ pipeline {
                 -out ${plan}
             """
           }
-        }
+//         }
       }
     }
 
@@ -112,14 +112,14 @@ pipeline {
         script {
           input "Create/update Terraform stack ${params.cluster} in aws?" 
 
-          withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', 
-          credentialsId: params.credential, 
-          accessKeyVariable: 'AWS_ACCESS_KEY_ID',  
-          secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
+//           withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', 
+//           credentialsId: params.credential, 
+//           accessKeyVariable: 'AWS_ACCESS_KEY_ID',  
+//           secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
             sh "terraform apply -input=false -auto-approve ${plan}"
           }
         }
-      }
+//       }
     }
 
     stage('Cluster setup') {
@@ -128,10 +128,10 @@ pipeline {
       }
       steps {
         script {
-          withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', 
-          credentialsId: params.credential, 
-          accessKeyVariable: 'AWS_ACCESS_KEY_ID',  
-          secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
+//           withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', 
+//           credentialsId: params.credential, 
+//           accessKeyVariable: 'AWS_ACCESS_KEY_ID',  
+//           secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
             
             sh "aws eks update-kubeconfig --name ${params.cluster} --region ${params.region}"
 
@@ -268,7 +268,7 @@ pipeline {
               """
             }
  
-          }
+//           }
         }
       }
     }
@@ -281,10 +281,10 @@ pipeline {
         script {
           input "Destroy Terraform stack ${params.cluster} in aws?" 
 
-          withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', 
-            credentialsId: params.credential, 
-            accessKeyVariable: 'AWS_ACCESS_KEY_ID',  
-            secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
+//           withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', 
+//             credentialsId: params.credential, 
+//             accessKeyVariable: 'AWS_ACCESS_KEY_ID',  
+//             secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
 
             sh """
               aws eks update-kubeconfig --name ${params.cluster} --region ${params.region}
@@ -301,7 +301,7 @@ pipeline {
             """
           }
         }
-      }
+//       }
     }
 
   }
