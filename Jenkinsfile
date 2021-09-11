@@ -118,7 +118,7 @@ pipeline {
 //           secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
             sh "terraform apply -input=false -auto-approve ${plan}"
           }
-        }
+//         }
 //       }
     }
 
