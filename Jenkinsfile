@@ -105,23 +105,23 @@ pipeline {
       }
     }
 
-    stage('TF Apply') {
-      when {
-        expression { params.action == 'create' }
-      }
-      steps {
-        script {
-          input "Create/update Terraform stack ${params.cluster} in aws?" 
-
-//           withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', 
-//           credentialsId: params.credential, 
-//           accessKeyVariable: 'AWS_ACCESS_KEY_ID',  
-//           secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
-            sh "terraform apply -input=false -auto-approve ${plan}"
-          }
-//         }
+//     stage('TF Apply') {
+//       when {
+//         expression { params.action == 'create' }
 //       }
-    }
+//       steps {
+//         script {
+//           input "Create/update Terraform stack ${params.cluster} in aws?" 
+
+// //           withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', 
+// //           credentialsId: params.credential, 
+// //           accessKeyVariable: 'AWS_ACCESS_KEY_ID',  
+// //           secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
+//             sh "terraform apply -input=false -auto-approve ${plan}"
+//           }
+// //         }
+// //       }
+//     }
 
     stage('Cluster setup') {
       when {
